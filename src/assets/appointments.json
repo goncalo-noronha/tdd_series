@@ -1,0 +1,65 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "patient",
+    "specialty",
+    "date"
+  ],
+  "properties": {
+    "patient": {
+      "$id": "#/properties/patient",
+      "type": "object",
+      "title": "The Patient Schema",
+      "required": [
+        "name",
+        "document_id"
+      ],
+      "properties": {
+        "name": {
+          "$id": "#/properties/patient/properties/name",
+          "type": "string",
+          "title": "The Name Schema",
+          "default": "",
+          "examples": [
+            "Michael"
+          ],
+          "pattern": "^(.*)$"
+        },
+        "document_id": {
+          "$id": "#/properties/patient/properties/document_id",
+          "type": "string",
+          "title": "The Document_id Schema",
+          "default": "",
+          "examples": [
+            "123456"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    },
+    "specialty": {
+      "$id": "#/properties/specialty",
+      "type": "string",
+      "title": "The Specialty Schema",
+      "default": "",
+      "examples": [
+        "Ophalmology"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "date": {
+      "$id": "#/properties/date",
+      "type": "string",
+      "title": "The Date Schema",
+      "default": "",
+      "examples": [
+        "2019-10-11"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

@@ -26,8 +26,6 @@ Mappings:
   StagesMap:
     sandbox:
       VariableName: Value
-    staging:
-      VariableName: Value
     production:
       VariableName: Value
 
@@ -37,23 +35,85 @@ Conditions:
   CreateSandboxResources: !Equals [ !Ref Stage, sandbox ]
 
 Resources:
-#####  Lambda Fuctions #####
-  HelloWorldFunction:
+  #####  Lambda Fuctions #####
+  AppointmentsPostFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./build/package/
-      Handler: hello-world
+      Handler: appointments-post
       Runtime: go1.x
       MemorySize: 128
       Events:
         CatchAll:
           Type: Api
           Properties:
-            Path: /hello-world
+            Path: /appointments
+            Method: POST
+  AppointmentsListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/package/
+      Handler: appointments-list
+      Runtime: go1.x
+      MemorySize: 128
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /appointments
             Method: GET
+  AppointmentsGetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/package/
+      Handler: appointments-get
+      Runtime: go1.x
+      MemorySize: 128
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /appointments/{id}
+            Method: GET
+  AppointmentsDeleteFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./build/package/
+      Handler: appointments-delete
+      Runtime: go1.x
+      MemorySize: 128
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /appointments/{id}
+            Method: DELETE
+  #####  Dynamo DB tables #####
+  AppointmentsDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: 'Appointments'
+      AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
 
 
 Outputs:
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL to print Hello, World!"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello-world/"
+  AppointmentsPostApi:
+    Description: "API Gateway endpoint URL to create a new Appointment"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/appointments"
+  AppointmentsListApi:
+    Description: "API Gateway endpoint URL to list all Appointments"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/appointments"
+  AppointmentsGetApi:
+    Description: "API Gateway endpoint URL to retrieve an Appointment by identifier"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/appointments/{id}"
+  AppointmentsDeleteApi:
+    Description: "API Gateway endpoint URL to delete an Appointment by identifier"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/appointments/{id}"
