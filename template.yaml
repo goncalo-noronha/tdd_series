@@ -1,9 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  
-  golang-sam-bootstrap
-  SAM Template for golang-sam-bootstrap
+
+  github.com/goncalo-noronha/tdd_series
+
+  TDD Series learning course
 
 #####  Globals for Lambda functions #####
 Globals:
@@ -32,7 +33,7 @@ Mappings:
 
 
 #####  Template Conditions #####
-Conditions: 
+Conditions:
   CreateSandboxResources: !Equals [ !Ref Stage, sandbox ]
 
 Resources:
