@@ -2,6 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -10,9 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/google/uuid"
 	"github.com/xeipuuv/gojsonschema"
-	"log"
-	"net/http"
-	"os"
 )
 
 func postHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -25,10 +26,10 @@ func postHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyR
 	svc := dynamodb.New(sess)
 
 	var appointment struct {
-		Id      string `json:"id,omitempty"`
+		ID      string `json:"id,omitempty"`
 		Patient struct {
 			Name       string `json:"name"`
-			DocumentId string `json:"document_id"`
+			DocumentID string `json:"document_id"`
 		}
 		Specialty string `json:"specialty"`
 		Date      string `json:"date"`
@@ -86,7 +87,7 @@ func postHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyR
 		}, nil
 	}
 
-	appointment.Id = uuid.String()
+	appointment.ID = uuid.String()
 
 	av, err := dynamodbattribute.MarshalMap(appointment)
 
@@ -112,7 +113,7 @@ func postHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyR
 		}, nil
 	}
 
-	marshalledJson, err := json.Marshal(appointment)
+	marshalledJSON, err := json.Marshal(appointment)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -124,7 +125,7 @@ func postHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyR
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusAccepted,
-		Body:       string(marshalledJson),
+		Body:       string(marshalledJSON),
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
