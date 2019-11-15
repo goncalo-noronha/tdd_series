@@ -1,21 +1,26 @@
 package db
 
 type Appointment struct {
-	ID string
-	name string
+	ID      string `json:"id,omitempty"`
+	Patient struct {
+		Name       string `json:"name"`
+		DocumentId string `json:"document_id"`
+	}
+	Specialty string `json:"specialty"`
+	Date      string `json:"date"`
 }
 
 type AppointmentRepository struct {
-	dao DAO
+	Dao DAO
 }
 
 func (repository *AppointmentRepository) FindOneByID(ID string) (Appointment, error) {
 
-	input := map[string]string{
-		"ID": ID,
+	input := map[string]interface{}{
+		"id": ID,
 	}
 
-	result, err := repository.dao.Read(input)
+	result, err := repository.Dao.Read(input)
 	if err != nil {
 		return Appointment{}, err
 	}

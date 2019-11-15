@@ -4,65 +4,35 @@ import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/google/uuid"
+	db2 "github.com/goncalo-noronha/tdd_series/src/app/db"
+	"github.com/goncalo-noronha/tdd_series/src/infra/db"
 	"log"
 	"net/http"
 )
 
 func getHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
 	appointmentId := request.PathParameters["id"]
-
-	uuid, err := uuid.Parse(appointmentId)
-
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
-	}
-
-	var appointment struct {
-		Id      string `json:"id,omitempty"`
-		Patient struct {
-			Name       string `json:"name"`
-			DocumentId string `json:"document_id"`
-		}
-		Specialty string `json:"specialty"`
-		Date      string `json:"date"`
-	}
 
 	sess := session.Must(session.NewSessionWithOptions(session.Options{
 		SharedConfigState: session.SharedConfigEnable,
 	}))
-
-	// Create DynamoDB client
 	svc := dynamodb.New(sess)
 
-	result, err := svc.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String("Appointments"),
-		Key: map[string]*dynamodb.AttributeValue{
-			"id": {
-				S: aws.String(uuid.String()),
-			},
-		},
-	})
+	dao := db.DynamoDBDAO{TypedDynDBDAO: &db.AppointmentDynDAO{}, Connection: svc}
+	repo := db2.AppointmentRepository{Dao: &dao}
+
+	appointment, err := repo.FindOneByID(appointmentId)
 
 	if err != nil {
 		log.Println(err)
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusInternalServerError,
 			Body:       err.Error(),
-		}, nil
+		}, err
 	}
-
-	if result.Item == nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusNotFound,
-		}, nil
-	}
-
-	err = dynamodbattribute.UnmarshalMap(result.Item, &appointment)
 
 	response, err := json.Marshal(appointment)
 
@@ -73,6 +43,7 @@ func getHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRe
 			Body:       err.Error(),
 		}, err
 	}
+
 	return events.APIGatewayProxyResponse{
 		Body:       string(response),
 		StatusCode: 200,

@@ -15,6 +15,8 @@ import (
 
 func listHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
+	panic("HEYYY")
+
 	var appointments []struct {
 		Id      string `json:"id,omitempty"`
 		Patient struct {
