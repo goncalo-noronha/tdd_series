@@ -1,4 +1,4 @@
-package db
+package app
 
 type Appointment struct {
 	ID      string `json:"id,omitempty"`
@@ -11,7 +11,7 @@ type Appointment struct {
 }
 
 type AppointmentRepository struct {
-	Dao DAO
+	Gateway PersistenceGateway
 }
 
 func (repository *AppointmentRepository) FindOneByID(ID string) (Appointment, error) {
@@ -20,7 +20,7 @@ func (repository *AppointmentRepository) FindOneByID(ID string) (Appointment, er
 		"id": ID,
 	}
 
-	result, err := repository.Dao.Read(input)
+	result, err := repository.Gateway.Read(input)
 	if err != nil {
 		return Appointment{}, err
 	}

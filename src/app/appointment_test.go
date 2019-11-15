@@ -1,4 +1,4 @@
-package db
+package app
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -7,7 +7,7 @@ import (
 )
 
 type DAOMock struct {
-	DAO
+	PersistenceGateway
 	mock.Mock
 }
 

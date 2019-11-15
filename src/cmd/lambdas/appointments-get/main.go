@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	db2 "github.com/goncalo-noronha/tdd_series/src/app/db"
+	"github.com/goncalo-noronha/tdd_series/src/app"
 	"github.com/goncalo-noronha/tdd_series/src/infra/db"
 	"log"
 	"net/http"
@@ -22,7 +22,7 @@ func getHandler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRe
 	svc := dynamodb.New(sess)
 
 	dao := db.DynamoDBDAO{TypedDynDBDAO: &db.AppointmentDynDAO{}, Connection: svc}
-	repo := db2.AppointmentRepository{Dao: &dao}
+	repo := app.AppointmentRepository{Gateway: &dao}
 
 	appointment, err := repo.FindOneByID(appointmentId)
 

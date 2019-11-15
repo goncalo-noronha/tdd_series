@@ -4,7 +4,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/goncalo-noronha/tdd_series/src/app/db"
+	"github.com/goncalo-noronha/tdd_series/src/app"
 )
 
 type AppointmentDynDAO struct {
@@ -15,12 +15,12 @@ func (ad *AppointmentDynDAO) getSource() *string {
 }
 
 func (ad *AppointmentDynDAO) mapToObj(input map[string]*dynamodb.AttributeValue) (interface{}, error) {
-	var appointment db.Appointment
+	var appointment app.Appointment
 
 	err := dynamodbattribute.UnmarshalMap(input, &appointment)
 
 	if err != nil {
-		return db.Appointment{}, err
+		return app.Appointment{}, err
 	}
 
 	return appointment, nil

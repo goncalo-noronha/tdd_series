@@ -4,7 +4,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
-	"github.com/goncalo-noronha/tdd_series/src/app/db"
+	"github.com/goncalo-noronha/tdd_series/src/app"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"strconv"
@@ -49,7 +49,7 @@ func TestDynamoDBDAO_Read(t *testing.T) {
 		result, err := sut.Read(map[string]interface{}{"id": "UUID"})
 
 		assert.Nil(t, err)
-		assert.Equal(t, db.Appointment{ID: "UUID"}, result)
+		assert.Equal(t, app.Appointment{ID: "UUID"}, result)
 	})
 
 	t.Run("Test input field number", func(t *testing.T) {
@@ -75,6 +75,6 @@ func TestDynamoDBDAO_Read(t *testing.T) {
 		result, err := sut.Read(map[string]interface{}{"id": 1})
 
 		assert.Nil(t, err)
-		assert.Equal(t, db.Appointment{ID: "1"}, result)
+		assert.Equal(t, app.Appointment{ID: "1"}, result)
 	})
 }
