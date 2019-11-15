@@ -5,7 +5,6 @@ go 1.13
 require (
 	github.com/aws/aws-lambda-go v1.13.2
 	github.com/aws/aws-sdk-go v1.25.29
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/nlopes/slack v0.6.0 // indirect
 	github.com/stretchr/testify v1.4.0
