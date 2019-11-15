@@ -3,27 +3,11 @@ package db
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"github.com/goncalo-noronha/tdd_series/src/app"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"strconv"
 	"testing"
 )
-
-type MockDynamoConnection struct {
-	dynamodbiface.DynamoDBAPI
-	mock.Mock
-}
-
-func (mc *MockDynamoConnection) GetItem(input *dynamodb.GetItemInput) (*dynamodb.GetItemOutput, error) {
-	args := mc.Called(input)
-	if args.Error(1) != nil {
-		return nil, args.Error(1)
-	}
-
-	return args.Get(0).(*dynamodb.GetItemOutput), args.Error(1)
-}
 
 func TestDynamoDBDAO_Read(t *testing.T) {
 	t.Run("Test input field text", func(t *testing.T) {
